@@ -1,16 +1,248 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Twitch Alpha</title>
-    <link rel="stylesheet" href="normalize.css">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpofyKGjJUUqkLo" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error 404 - Página no encontrada</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: #fff;
+        }
+        
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 10rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ff4d4d, #f9cb28);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards 0.5s;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards 1s;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(45deg, #ff4d4d, #f9cb28);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 10px 20px rgba(249, 203, 40, 0.3);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards 1.5s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(249, 203, 40, 0.4);
+        }
+        
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover:before {
+            left: 100%;
+        }
+        
+        .countdown {
+            margin-top: 2rem;
+            font-size: 1.2rem;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards 2s;
+        }
+        
+        /* Animaciones */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Partículas */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+        }
+        
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Efecto de distorsión */
+        .distortion {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://img.freepik.com/vector-gratis/fondo-pagina-error-404-distorsion_23-2148090244.jpg') center/cover;
+            opacity: 0.1;
+            z-index: -1;
+            animation: distort 10s infinite linear;
+        }
+        
+        @keyframes distort {
+            0%, 100% {
+                transform: scale(1);
+                filter: hue-rotate(0deg);
+            }
+            25% {
+                transform: scale(1.02);
+                filter: hue-rotate(90deg);
+            }
+            50% {
+                transform: scale(1);
+                filter: hue-rotate(180deg);
+            }
+            75% {
+                transform: scale(1.02);
+                filter: hue-rotate(270deg);
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="distortion"></div>
+    <div class="particles" id="particles"></div>
+    
     <div class="container">
-        <i class="fa-solid fa-comment-dots fa-4x"></i>  <h1>TWITCH ALPHA</h1>
-        <button class="horario-button">HORARIO</button>
+        <h1>404</h1>
+        <h2>¡Ups! Página no encontrada</h2>
+        <p>Lo sentimos, la página que estás buscando no existe o ha sido movida. Serás redirigido automáticamente a BigNameless.github.io en unos segundos.</p>
+        <a href="https://bignameless.github.io" class="btn">Ir a BigNameless.github.io</a>
+        <div class="countdown" id="countdown">Redirigiendo en 10 segundos...</div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        // Crear partículas
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Tamaño aleatorio entre 2px y 6px
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Posición aleatoria
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Animación con duración aleatoria
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Retraso aleatorio
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Redirección automática con cuenta regresiva
+        function startCountdown() {
+            let seconds = 10;
+            const countdownElement = document.getElementById('countdown');
+            const countdownInterval = setInterval(() => {
+                seconds--;
+                countdownElement.textContent = `Redirigiendo en ${seconds} segundos...`;
+                
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                    window.location.href = "https://bignameless.github.io";
+                }
+            }, 1000);
+        }
+        
+        // Inicializar efectos cuando se carga la página
+        window.onload = function() {
+            createParticles();
+            startCountdown();
+        };
+    </script>
 </body>
 </html>

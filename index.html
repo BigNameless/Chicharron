@@ -3,246 +3,1289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error 404 - Página no encontrada</title>
+    <title>Horario de Juego Semanal</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        :root {
+            --dark-bg: #0d0d17;
+            --darker-bg: #0a0a12;
+            --accent: #e94560;
+            --secondary: #0a1429;
+            --text: #f1f1f1;
+            --bronze: #cd7f32;
+            --silver: #c0c0c0;
+            --gold: #ffd700;
+            --platinum: #e5e4e2;
+            --diamond: #b9f2ff;
+            --ruby: #e0115f;
+            --emerald: #50c878;
+        }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            color: #fff;
+            background-color: var(--dark-bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            background-image: radial-gradient(circle at center, #1a1a2e 0%, #0d0d17 100%);
         }
         
         .container {
-            text-align: center;
-            position: relative;
-            z-index: 1;
+            display: grid;
+            grid-template-columns: 200px 1fr 350px;
+            gap: 20px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: var(--darker-bg);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
         
         h1 {
-            font-size: 10rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #ff4d4d, #f9cb28);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards 0.5s;
-        }
-        
-        p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            max-width: 600px;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards 1s;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: linear-gradient(45deg, #ff4d4d, #f9cb28);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 50px;
+            font-size: 24px;
             font-weight: 600;
-            box-shadow: 0 10px 20px rgba(249, 203, 40, 0.3);
-            transition: all 0.3s ease;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards 1.5s;
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .header-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .delete-btn {
+            background-color: #ff7b00;
+            color: white;
+        }
+        
+        .edit-btn {
+            background-color: #4a7aff;
+            color: white;
+        }
+        
+        .header-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .user-list {
+            background-color: var(--darker-bg);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 150px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .user-list h2 {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--secondary);
+        }
+        
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .user-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        
+        .schedule-container {
+            background-color: var(--darker-bg);
+            border-radius: 10px;
+            padding: 20px;
+            overflow: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .timezone-config {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+        
+        .timezone-config input {
+            padding: 8px;
+            border: 1px solid var(--secondary);
+            border-radius: 5px;
+            background-color: var(--dark-bg);
+            color: var(--text);
+            flex-grow: 1;
+        }
+        
+        .timezone-config button {
+            padding: 8px 15px;
+            background-color: var(--secondary);
+            color: var(--text);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .timezone-config button:hover {
+            background-color: #132546;
+        }
+        
+        .schedule {
+            display: grid;
+            grid-template-columns: 60px repeat(7, 1fr);
+            gap: 5px;
+        }
+        
+        .time-label {
+            padding: 10px 5px;
+            text-align: center;
+            font-size: 12px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 4px;
+        }
+        
+        .day-label {
+            padding: 10px;
+            text-align: center;
+            background-color: var(--secondary);
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        
+        .time-slot {
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-radius: 4px;
+        }
+        
+        .time-slot:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .user-count {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+        
+        .draggable-user {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: move;
+            z-index: 10;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .user-info {
+            background-color: var(--darker-bg);
+            border-radius: 10px;
+            padding: 20px;
+            flex-grow: 1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .user-info h2 {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--secondary);
+        }
+        
+        .info-line {
+            margin-bottom: 10px;
+            display: flex;
+        }
+        
+        .info-label {
+            width: 120px;
+            font-weight: bold;
+        }
+        
+        .info-value {
+            flex-grow: 1;
+        }
+        
+        .info-value a {
+            color: #9146ff;
+            text-decoration: none;
+        }
+        
+        .info-value a:hover {
+            text-decoration: underline;
+        }
+        
+        .rank-line {
+            height: 3px;
+            margin-top: 5px;
+            border-radius: 2px;
+        }
+        
+        .bronze { background-color: var(--bronze); }
+        .silver { background-color: var(--silver); }
+        .gold { background-color: var(--gold); }
+        .platinum { background-color: var(--platinum); }
+        .diamond { background-color: var(--diamond); }
+        .ruby { background-color: var(--ruby); }
+        .emerald { background-color: var(--emerald); }
+        
+        .registration {
+            background-color: var(--darker-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .registration h2 {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--secondary);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--secondary);
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: var(--text);
+        }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .option-btn {
+            padding: 8px 5px;
+            background-color: var(--secondary);
+            border: none;
+            border-radius: 5px;
+            color: var(--text);
+            cursor: pointer;
+            text-align: center;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+        
+        .option-btn.selected {
+            background-color: var(--accent);
+        }
+        
+        .option-btn:hover {
+            background-color: #132546;
+        }
+        
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .day-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .register-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .register-btn:hover {
+            background-color: #d13354;
+        }
+        
+        .video-container {
+            background-color: var(--darker-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .video-container h2 {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--secondary);
+        }
+        
+        .video-wrapper {
+            width: 100%;
+            border-radius: 5px;
             overflow: hidden;
         }
         
-        .btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(249, 203, 40, 0.4);
-        }
-        
-        .btn:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
+        .video-wrapper iframe {
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
+            height: 200px;
+            border: none;
         }
         
-        .btn:hover:before {
-            left: 100%;
-        }
-        
-        .countdown {
-            margin-top: 2rem;
-            font-size: 1.2rem;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards 2s;
-        }
-        
-        /* Animaciones */
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Partículas */
-        .particles {
-            position: absolute;
+        .modal {
+            display: none;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
         }
         
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            animation: floatParticle linear infinite;
+        .modal-content {
+            background-color: var(--darker-bg);
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
         
-        @keyframes floatParticle {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-1000px) rotate(720deg);
-                opacity: 0;
-            }
+        .modal h2 {
+            margin-bottom: 20px;
+            text-align: center;
         }
         
-        /* Efecto de distorsión */
-        .distortion {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .modal input {
             width: 100%;
-            height: 100%;
-            background: url('https://img.freepik.com/vector-gratis/fondo-pagina-error-404-distorsion_23-2148090244.jpg') center/cover;
-            opacity: 0.1;
-            z-index: -1;
-            animation: distort 10s infinite linear;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--secondary);
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: var(--text);
         }
         
-        @keyframes distort {
-            0%, 100% {
-                transform: scale(1);
-                filter: hue-rotate(0deg);
-            }
-            25% {
-                transform: scale(1.02);
-                filter: hue-rotate(90deg);
-            }
-            50% {
-                transform: scale(1);
-                filter: hue-rotate(180deg);
-            }
-            75% {
-                transform: scale(1.02);
-                filter: hue-rotate(270deg);
-            }
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            flex-grow: 1;
+            transition: background-color 0.3s;
+        }
+        
+        .confirm-btn {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .cancel-btn {
+            background-color: var(--secondary);
+            color: var(--text);
+        }
+        
+        .modal-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .users-in-slot {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border-top: 1px solid var(--secondary);
+            padding-top: 15px;
+        }
+        
+        .slot-user-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .slot-user-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-cube {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            margin-right: 5px;
+        }
+        
+        /* Estilos para el drag and drop */
+        .dragging {
+            opacity: 0.7;
+            box-shadow: 0 0 20px rgba(233, 69, 96, 0.7);
+        }
+        
+        .drop-target {
+            background-color: rgba(233, 69, 96, 0.2) !important;
+            box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
         }
     </style>
 </head>
 <body>
-    <div class="distortion"></div>
-    <div class="particles" id="particles"></div>
-    
     <div class="container">
-        <h1>404</h1>
-        <h2>¡Ups! Página no encontrada</h2>
-        <p>Lo sentimos, la página que estás buscando no existe o ha sido movida. Serás redirigido automáticamente a BigNameless.github.io en unos segundos.</p>
-        <a href="https://bignameless.github.io" class="btn">Ir a BigNameless.github.io</a>
-        <div class="countdown" id="countdown">Redirigiendo en 10 segundos...</div>
-    </div>
-
-    <script>
-        // Crear partículas
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const particleCount = 50;
+        <header>
+            <h1>Base de Datos de Horarios de Juego</h1>
+            <div class="header-buttons">
+                <button class="header-btn edit-btn" id="editBtn">Editar Usuario</button>
+                <button class="header-btn delete-btn" id="deleteBtn">Eliminar Cubículo</button>
+            </div>
+        </header>
+        
+        <div class="user-list" id="userList">
+            <h2>Usuarios Registrados</h2>
+            <!-- Lista de usuarios se generará dinámicamente -->
+        </div>
+        
+        <div class="schedule-container">
+            <div class="timezone-config">
+                <input type="text" id="countryInput" placeholder="Ingresa tu país (ej: Colombia)">
+                <button id="setTimezone">Configurar Zona Horaria</button>
+            </div>
             
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                
-                // Tamaño aleatorio entre 2px y 6px
-                const size = Math.random() * 4 + 2;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                
-                // Posición aleatoria
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.top = `${Math.random() * 100}%`;
-                
-                // Animación con duración aleatoria
-                const duration = Math.random() * 20 + 10;
-                particle.style.animationDuration = `${duration}s`;
-                
-                // Retraso aleatorio
-                particle.style.animationDelay = `${Math.random() * 5}s`;
-                
-                particlesContainer.appendChild(particle);
-            }
-        }
+            <div class="schedule" id="schedule">
+                <!-- Horario se generará dinámicamente con JavaScript -->
+            </div>
+        </div>
         
-        // Redirección automática con cuenta regresiva
-        function startCountdown() {
-            let seconds = 10;
-            const countdownElement = document.getElementById('countdown');
-            const countdownInterval = setInterval(() => {
-                seconds--;
-                countdownElement.textContent = `Redirigiendo en ${seconds} segundos...`;
+        <div class="sidebar">
+            <div class="user-info" id="userInfo">
+                <h2>Información del Usuario</h2>
+                <div class="info-line">
+                    <div class="info-label">ID:</div>
+                    <div class="info-value">-</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-label">Categoría:</div>
+                    <div class="info-value">-</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-label">Horas de juego:</div>
+                    <div class="info-value">-</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-label">Días:</div>
+                    <div class="info-value">-</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-label">Rango:</div>
+                    <div class="info-value">-</div>
+                </div>
+                <div class="info-line">
+                    <div class="info-label">Twitch:</div>
+                    <div class="info-value">-</div>
+                </div>
+                <div class="rank-line" id="rankLine"></div>
+                <div class="info-line">
+                    <div class="info-label">Hora local:</div>
+                    <div class="info-value">-</div>
+                </div>
+                <div id="usersInSlot" class="users-in-slot" style="display: none;">
+                    <h3>Usuarios en este horario:</h3>
+                    <!-- Lista de usuarios en el slot seleccionado -->
+                </div>
+            </div>
+            
+            <div class="registration">
+                <h2>Registro de Usuario</h2>
+                <div class="form-group">
+                    <label for="userId">ID de Usuario:</label>
+                    <input type="text" id="userId" placeholder="Ingresa tu ID">
+                </div>
                 
-                if (seconds <= 0) {
-                    clearInterval(countdownInterval);
-                    window.location.href = "https://bignameless.github.io";
+                <div class="form-group">
+                    <label for="twitchChannel">Canal de Twitch:</label>
+                    <input type="text" id="twitchChannel" placeholder="Ej: tu_canal">
+                </div>
+                
+                <div class="form-group">
+                    <label>Categoría:</label>
+                    <div class="btn-group">
+                        <button class="option-btn" data-value="Ligero">Ligero</button>
+                        <button class="option-btn" data-value="Mediano">Mediano</button>
+                        <button class="option-btn" data-value="Pesado">Pesado</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Rango:</label>
+                    <div class="btn-group">
+                        <button class="option-btn" data-value="Bronce">Bronce</button>
+                        <button class="option-btn" data-value="Plata">Plata</button>
+                        <button class="option-btn" data-value="Oro">Oro</button>
+                        <button class="option-btn" data-value="Platino">Platino</button>
+                        <button class="option-btn" data-value="Diamante">Diamante</button>
+                        <button class="option-btn" data-value="Rubi">Rubí</button>
+                        <button class="option-btn" data-value="Esmeralda">Esmeralda</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Horario de juego:</label>
+                    <div class="time-inputs">
+                        <input type="time" id="startTime">
+                        <input type="time" id="endTime">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Días de juego:</label>
+                    <div class="day-selector">
+                        <button class="option-btn" data-value="Lunes">Lun</button>
+                        <button class="option-btn" data-value="Martes">Mar</button>
+                        <button class="option-btn" data-value="Miercoles">Mié</button>
+                        <button class="option-btn" data-value="Jueves">Jue</button>
+                        <button class="option-btn" data-value="Viernes">Vie</button>
+                        <button class="option-btn" data-value="Sabado">Sáb</button>
+                        <button class="option-btn" data-value="Domingo">Dom</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="userCountry">País:</label>
+                    <input type="text" id="userCountry" placeholder="Ingresa tu país">
+                </div>
+                
+                <div class="form-group">
+                    <label for="userPassword">Contraseña (4 dígitos):</label>
+                    <input type="password" id="userPassword" placeholder="****" maxlength="4" pattern="\d{4}">
+                </div>
+                
+                <button class="register-btn" id="registerBtn">Registrar Usuario</button>
+            </div>
+            
+            <div class="video-container">
+                <h2>Video en Reproducción</h2>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/wtubUGD2M-4?autoplay=1&mute=1&loop=1&playlist=wtubUGD2M-4" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para eliminar usuarios -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <h2>Eliminar Cubículo</h2>
+            <input type="password" id="passwordInput" placeholder="Ingresa la contraseña">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" id="cancelDelete">Cancelar</button>
+                <button class="modal-btn confirm-btn" id="confirmDelete">Eliminar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para editar usuarios -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <h2>Editar Usuario</h2>
+            <input type="password" id="editPasswordInput" placeholder="Ingresa tu contraseña de 4 dígitos">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" id="cancelEdit">Cancelar</button>
+                <button class="modal-btn confirm-btn" id="confirmEdit">Editar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para confirmar movimiento -->
+    <div class="modal" id="moveModal">
+        <div class="modal-content">
+            <h2>Mover Horario</h2>
+            <p id="moveMessage">Por favor ingresa tu contraseña para confirmar el cambio de horario.</p>
+            <input type="password" id="movePasswordInput" placeholder="Ingresa tu contraseña de 4 dígitos">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" id="cancelMove">Cancelar</button>
+                <button class="modal-btn confirm-btn" id="confirmMove">Confirmar</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables globales
+            let users = JSON.parse(localStorage.getItem('scheduleUsers')) || [];
+            let selectedDays = [];
+            let selectedCategory = '';
+            let selectedRank = '';
+            let timezoneOffset = 0;
+            let selectedUserCube = null;
+            let selectedSlot = null;
+            let userColors = {};
+            let draggedUser = null;
+            let targetSlot = null;
+            
+            // Inicializar la interfaz
+            initializeSchedule();
+            updateUserList();
+            updateUserSidebar();
+            
+            // Configurar manejadores de eventos para los botones de opción
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const parent = this.parentElement;
+                    
+                    // Determinar el tipo de opción
+                    if (parent.classList.contains('btn-group')) {
+                        // Para categoría y rango (selección única)
+                        parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                        this.classList.add('selected');
+                        
+                        if (this.parentElement.previousElementSibling.textContent === 'Categoría:') {
+                            selectedCategory = this.dataset.value;
+                        } else if (this.parentElement.previousElementSibling.textContent === 'Rango:') {
+                            selectedRank = this.dataset.value;
+                        }
+                    } else if (parent.classList.contains('day-selector')) {
+                        // Para días (selección múltiple)
+                        this.classList.toggle('selected');
+                        
+                        selectedDays = [];
+                        parent.querySelectorAll('.option-btn.selected').forEach(selectedBtn => {
+                            selectedDays.push(selectedBtn.dataset.value);
+                        });
+                    }
+                });
+            });
+            
+            // Configurar el botón de registro
+            document.getElementById('registerBtn').addEventListener('click', function() {
+                const userId = document.getElementById('userId').value.trim();
+                const twitchChannel = document.getElementById('twitchChannel').value.trim();
+                const startTime = document.getElementById('startTime').value;
+                const endTime = document.getElementById('endTime').value;
+                const country = document.getElementById('userCountry').value.trim();
+                const password = document.getElementById('userPassword').value;
+                
+                // Validaciones
+                if (!userId) {
+                    alert('Por favor ingresa un ID de usuario');
+                    return;
                 }
-            }, 1000);
-        }
-        
-        // Inicializar efectos cuando se carga la página
-        window.onload = function() {
-            createParticles();
-            startCountdown();
-        };
+                
+                if (!selectedCategory) {
+                    alert('Por favor selecciona una categoría');
+                    return;
+                }
+                
+                if (!selectedRank) {
+                    alert('Por favor selecciona un rango');
+                    return;
+                }
+                
+                if (!startTime || !endTime) {
+                    alert('Por favor selecciona horario de inicio y fin');
+                    return;
+                }
+                
+                if (selectedDays.length === 0) {
+                    alert('Por favor selecciona al menos un día');
+                    return;
+                }
+                
+                if (!country) {
+                    alert('Por favor ingresa tu país');
+                    return;
+                }
+                
+                if (!password || password.length !== 4 || !/^\d+$/.test(password)) {
+                    alert('Por favor ingresa una contraseña de 4 dígitos');
+                    return;
+                }
+                
+                // Calcular horas de juego
+                const start = parseTime(startTime);
+                const end = parseTime(endTime);
+                let hours = end - start;
+                if (hours < 0) hours += 24; // Para manejar horarios que cruzan medianoche
+                
+                // Formatear horas de juego (sin decimales)
+                const hoursFormatted = Math.floor(hours);
+                const minutesFormatted = Math.round((hours - hoursFormatted) * 60);
+                const playTimeFormatted = `${hoursFormatted}:${minutesFormatted.toString().padStart(2, '0')}`;
+                
+                // Asignar color único al usuario si no tiene uno
+                if (!userColors[userId]) {
+                    userColors[userId] = getRandomColor();
+                    localStorage.setItem('userColors', JSON.stringify(userColors));
+                }
+                
+                // Crear o actualizar usuario
+                const userIndex = users.findIndex(u => u.id === userId);
+                if (userIndex !== -1) {
+                    // Actualizar usuario existente
+                    users[userIndex] = {
+                        ...users[userIndex],
+                        twitch: twitchChannel,
+                        category: selectedCategory,
+                        rank: selectedRank,
+                        startTime: startTime,
+                        endTime: endTime,
+                        days: [...selectedDays],
+                        country: country,
+                        localHours: playTimeFormatted,
+                        color: userColors[userId],
+                        password: password
+                    };
+                } else {
+                    // Crear nuevo usuario
+                    const user = {
+                        id: userId,
+                        twitch: twitchChannel,
+                        category: selectedCategory,
+                        rank: selectedRank,
+                        startTime: startTime,
+                        endTime: endTime,
+                        days: [...selectedDays],
+                        country: country,
+                        localHours: playTimeFormatted,
+                        color: userColors[userId],
+                        password: password
+                    };
+                    
+                    users.push(user);
+                }
+                
+                localStorage.setItem('scheduleUsers', JSON.stringify(users));
+                
+                // Actualizar interfaz
+                updateUserList();
+                updateUserSidebar();
+                
+                // Limpiar formulario
+                document.getElementById('userId').value = '';
+                document.getElementById('twitchChannel').value = '';
+                document.getElementById('startTime').value = '';
+                document.getElementById('endTime').value = '';
+                document.getElementById('userCountry').value = '';
+                document.getElementById('userPassword').value = '';
+                
+                document.querySelectorAll('.option-btn.selected').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                
+                selectedCategory = '';
+                selectedRank = '';
+                selectedDays = [];
+                
+                alert('Usuario registrado con éxito');
+            });
+            
+            // Configurar el botón de zona horaria
+            document.getElementById('setTimezone').addEventListener('click', function() {
+                const country = document.getElementById('countryInput').value.trim();
+                if (country) {
+                    // Simular una diferencia horaria basada en el país
+                    // En una aplicación real, esto usaría una API de zona horaria
+                    if (country.toLowerCase().includes('españa')) {
+                        timezoneOffset = 6; // +6 horas respecto a Colombia
+                    } else if (country.toLowerCase().includes('méxico') || country.toLowerCase().includes('mexico')) {
+                        timezoneOffset = -1; // -1 hora respecto a Colombia
+                    } else {
+                        timezoneOffset = 0; // Por defecto, sin cambio
+                    }
+                    
+                    updateUserList();
+                    alert(`Zona horaria configurada para ${country}`);
+                } else {
+                    alert('Por favor ingresa un país');
+                }
+            });
+            
+            // Configurar el botón de eliminar
+            document.getElementById('deleteBtn').addEventListener('click', function() {
+                if (selectedUserCube) {
+                    document.getElementById('deleteModal').style.display = 'flex';
+                    document.getElementById('passwordInput').value = '';
+                    document.getElementById('passwordInput').focus();
+                } else {
+                    alert('Por favor selecciona un cubículo para eliminar');
+                }
+            });
+            
+            document.getElementById('cancelDelete').addEventListener('click', function() {
+                document.getElementById('deleteModal').style.display = 'none';
+            });
+            
+            document.getElementById('confirmDelete').addEventListener('click', function() {
+                const password = document.getElementById('passwordInput').value;
+                if (password === 'Chicharrón') {
+                    if (selectedUserCube) {
+                        // Eliminar usuario seleccionado
+                        const userId = selectedUserCube.dataset.userId || selectedSlot.dataset.users.split(',')[0];
+                        users = users.filter(user => user.id !== userId);
+                        localStorage.setItem('scheduleUsers', JSON.stringify(users));
+                        updateUserList();
+                        updateUserSidebar();
+                        document.getElementById('userInfo').querySelectorAll('.info-value').forEach(el => {
+                            el.textContent = '-';
+                        });
+                        document.getElementById('rankLine').className = 'rank-line';
+                        document.getElementById('usersInSlot').style.display = 'none';
+                        selectedUserCube = null;
+                    }
+                    document.getElementById('deleteModal').style.display = 'none';
+                    alert('Cubículo eliminado con éxito');
+                } else {
+                    alert('Contraseña incorrecta');
+                }
+            });
+            
+            // Configurar el botón de editar
+            document.getElementById('editBtn').addEventListener('click', function() {
+                if (selectedUserCube) {
+                    document.getElementById('editModal').style.display = 'flex';
+                    document.getElementById('editPasswordInput').value = '';
+                    document.getElementById('editPasswordInput').focus();
+                } else {
+                    alert('Por favor selecciona un usuario para editar');
+                }
+            });
+            
+            document.getElementById('cancelEdit').addEventListener('click', function() {
+                document.getElementById('editModal').style.display = 'none';
+            });
+            
+            document.getElementById('confirmEdit').addEventListener('click', function() {
+                const password = document.getElementById('editPasswordInput').value;
+                const userId = selectedUserCube.dataset.userId || selectedSlot.dataset.users.split(',')[0];
+                const user = users.find(u => u.id === userId);
+                
+                if (user && user.password === password) {
+                    // Llenar el formulario con los datos del usuario
+                    document.getElementById('userId').value = user.id;
+                    document.getElementById('twitchChannel').value = user.twitch || '';
+                    document.getElementById('userCountry').value = user.country;
+                    document.getElementById('startTime').value = user.startTime;
+                    document.getElementById('endTime').value = user.endTime;
+                    document.getElementById('userPassword').value = user.password;
+                    
+                    // Seleccionar categoría
+                    document.querySelectorAll('.btn-group').forEach(group => {
+                        if (group.previousElementSibling.textContent === 'Categoría:') {
+                            group.querySelectorAll('.option-btn').forEach(btn => {
+                                btn.classList.remove('selected');
+                                if (btn.dataset.value === user.category) {
+                                    btn.classList.add('selected');
+                                    selectedCategory = user.category;
+                                }
+                            });
+                        } else if (group.previousElementSibling.textContent === 'Rango:') {
+                            group.querySelectorAll('.option-btn').forEach(btn => {
+                                btn.classList.remove('selected');
+                                if (btn.dataset.value === user.rank) {
+                                    btn.classList.add('selected');
+                                    selectedRank = user.rank;
+                                }
+                            });
+                        }
+                    });
+                    
+                    // Seleccionar días
+                    selectedDays = [...user.days];
+                    document.querySelectorAll('.day-selector .option-btn').forEach(btn => {
+                        btn.classList.remove('selected');
+                        if (user.days.includes(btn.dataset.value)) {
+                            btn.classList.add('selected');
+                        }
+                    });
+                    
+                    document.getElementById('editModal').style.display = 'none';
+                    alert('Ahora puedes editar la información del usuario');
+                } else {
+                    alert('Contraseña incorrecta');
+                }
+            });
+            
+            // Configurar modal para mover usuarios
+            document.getElementById('cancelMove').addEventListener('click', function() {
+                document.getElementById('moveModal').style.display = 'none';
+                resetDrag();
+            });
+            
+            document.getElementById('confirmMove').addEventListener('click', function() {
+                const password = document.getElementById('movePasswordInput').value;
+                const user = users.find(u => u.id === draggedUser);
+                
+                if (user && user.password === password) {
+                    // Obtener información del slot de destino
+                    const [newHour, newDayIndex] = [targetSlot.dataset.hour, targetSlot.dataset.day];
+                    const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+                    const newDay = days[newDayIndex];
+                    
+                    // Actualizar días del usuario
+                    if (!user.days.includes(newDay)) {
+                        user.days.push(newDay);
+                    }
+                    
+                    // Ajustar hora según la zona horaria
+                    const adjustedHour = (parseInt(newHour) - timezoneOffset + 24) % 24;
+                    const newStartTime = `${adjustedHour.toString().padStart(2, '0')}:00`;
+                    const newEndTime = `${(adjustedHour + 1).toString().padStart(2, '0')}:00`;
+                    
+                    user.startTime = newStartTime;
+                    user.endTime = newEndTime;
+                    
+                    // Guardar cambios
+                    localStorage.setItem('scheduleUsers', JSON.stringify(users));
+                    updateUserList();
+                    updateUserSidebar();
+                    
+                    document.getElementById('moveModal').style.display = 'none';
+                    alert('Horario actualizado correctamente');
+                } else {
+                    alert('Contraseña incorrecta');
+                }
+                
+                resetDrag();
+            });
+            
+            // Cargar colores de usuario desde localStorage
+            const savedColors = localStorage.getItem('userColors');
+            if (savedColors) {
+                userColors = JSON.parse(savedColors);
+            }
+            
+            // Funciones auxiliares
+            function initializeSchedule() {
+                const schedule = document.getElementById('schedule');
+                schedule.innerHTML = '';
+                
+                // Crear encabezados de días
+                schedule.appendChild(createElement('div', 'time-label', 'Hora'));
+                const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+                days.forEach(day => {
+                    schedule.appendChild(createElement('div', 'day-label', day));
+                });
+                
+                // Crear slots de tiempo
+                for (let hour = 0; hour < 24; hour++) {
+                    // Etiqueta de hora
+                    const hourLabel = `${hour.toString().padStart(2, '0')}:00`;
+                    schedule.appendChild(createElement('div', 'time-label', hourLabel));
+                    
+                    // Slots para cada día
+                    for (let i = 0; i < 7; i++) {
+                        const slot = createElement('div', 'time-slot');
+                        slot.dataset.hour = hour;
+                        slot.dataset.day = i;
+                        
+                        // Eventos para drag and drop
+                        slot.addEventListener('dragover', function(e) {
+                            e.preventDefault();
+                            this.classList.add('drop-target');
+                        });
+                        
+                        slot.addEventListener('dragleave', function() {
+                            this.classList.remove('drop-target');
+                        });
+                        
+                        slot.addEventListener('drop', function(e) {
+                            e.preventDefault();
+                            this.classList.remove('drop-target');
+                            
+                            if (draggedUser) {
+                                targetSlot = this;
+                                document.getElementById('moveMessage').textContent = 
+                                    `Por favor ingresa la contraseña de ${draggedUser} para confirmar el cambio de horario.`;
+                                document.getElementById('moveModal').style.display = 'flex';
+                                document.getElementById('movePasswordInput').value = '';
+                                document.getElementById('movePasswordInput').focus();
+                            }
+                        });
+                        
+                        schedule.appendChild(slot);
+                    }
+                }
+            }
+            
+            function updateUserList() {
+                // Limpiar slots existentes
+                document.querySelectorAll('.user-count').forEach(el => el.remove());
+                
+                // Reiniciar datos de usuarios en cada slot
+                document.querySelectorAll('.time-slot').forEach(slot => {
+                    slot.dataset.users = '';
+                    slot.style.backgroundColor = '';
+                    slot.draggable = false;
+                });
+                
+                // Contar usuarios por slot
+                const slotCounts = {};
+                
+                users.forEach(user => {
+                    user.days.forEach(dayName => {
+                        const dayIndex = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'].indexOf(dayName);
+                        if (dayIndex !== -1) {
+                            const startHour = parseInt(user.startTime.split(':')[0]);
+                            const endHour = parseInt(user.endTime.split(':')[0]);
+                            
+                            // Ajustar hora según la zona horaria configurada
+                            const adjustedStartHour = (startHour + timezoneOffset + 24) % 24;
+                            const adjustedEndHour = (endHour + timezoneOffset + 24) % 24;
+                            
+                            for (let hour = adjustedStartHour; hour < adjustedEndHour; hour++) {
+                                const slotKey = `${hour}-${dayIndex}`;
+                                if (!slotCounts[slotKey]) {
+                                    slotCounts[slotKey] = {
+                                        count: 0,
+                                        users: []
+                                    };
+                                }
+                                
+                                slotCounts[slotKey].count++;
+                                slotCounts[slotKey].users.push(user.id);
+                            }
+                        }
+                    });
+                });
+                
+                // Actualizar visualización de slots
+                for (const [slotKey, data] of Object.entries(slotCounts)) {
+                    const [hour, day] = slotKey.split('-');
+                    const slot = document.querySelector(`.time-slot[data-hour="${hour}"][data-day="${day}"]`);
+                    
+                    if (slot) {
+                        slot.dataset.users = data.users.join(',');
+                        
+                        // Crear indicador de cantidad de usuarios
+                        const userCount = createElement('div', 'user-count', 
+                            data.count === 1 ? '1 usuario' : `${data.count} usuarios`);
+                        
+                        // Color de fondo según la cantidad de usuarios
+                        if (data.count === 1) {
+                            slot.style.backgroundColor = '#2a4d69';
+                        } else if (data.count === 2) {
+                            slot.style.backgroundColor = '#4b86b4';
+                        } else if (data.count === 3) {
+                            slot.style.backgroundColor = '#63ace5';
+                        } else {
+                            slot.style.backgroundColor = '#7ecefd';
+                        }
+                        
+                        // Hacer el slot arrastrable si tiene un solo usuario
+                        if (data.count === 1) {
+                            slot.draggable = true;
+                            slot.addEventListener('dragstart', function(e) {
+                                draggedUser = data.users[0];
+                                this.classList.add('dragging');
+                            });
+                            
+                            slot.addEventListener('dragend', function() {
+                                this.classList.remove('dragging');
+                                resetDrag();
+                            });
+                        }
+                        
+                        slot.appendChild(userCount);
+                    }
+                }
+            }
+            
+            function updateUserSidebar() {
+                const userList = document.getElementById('userList');
+                userList.innerHTML = '<h2>Usuarios Registrados</h2>';
+                
+                users.forEach(user => {
+                    const userItem = createElement('div', 'user-item');
+                    userItem.draggable = true;
+                    
+                    const colorBox = createElement('div', 'user-color');
+                    colorBox.style.backgroundColor = user.color;
+                    
+                    const userIdText = createElement('span', '', user.id);
+                    
+                    userItem.appendChild(colorBox);
+                    userItem.appendChild(userIdText);
+                    
+                    userItem.addEventListener('click', function() {
+                        showUserInfo(user);
+                    });
+                    
+                    // Hacer los usuarios arrastrables desde la lista
+                    userItem.addEventListener('dragstart', function(e) {
+                        draggedUser = user.id;
+                        this.classList.add('dragging');
+                    });
+                    
+                    userItem.addEventListener('dragend', function() {
+                        this.classList.remove('dragging');
+                        resetDrag();
+                    });
+                    
+                    userList.appendChild(userItem);
+                });
+            }
+            
+            function showUserInfo(user) {
+                document.getElementById('userInfo').querySelectorAll('.info-value')[0].textContent = user.id;
+                document.getElementById('userInfo').querySelectorAll('.info-value')[1].textContent = user.category;
+                document.getElementById('userInfo').querySelectorAll('.info-value')[2].textContent = `${user.localHours} horas`;
+                document.getElementById('userInfo').querySelectorAll('.info-value')[3].textContent = user.days.join(', ');
+                document.getElementById('userInfo').querySelectorAll('.info-value')[4].textContent = user.rank;
+                
+                // Mostrar enlace de Twitch si está disponible
+                const twitchValue = document.getElementById('userInfo').querySelectorAll('.info-value')[5];
+                if (user.twitch) {
+                    twitchValue.innerHTML = `<a href="https://twitch.tv/${user.twitch}" target="_blank">twitch.tv/${user.twitch}</a>`;
+                } else {
+                    twitchValue.textContent = '-';
+                }
+                
+                const rankLine = document.getElementById('rankLine');
+                rankLine.className = 'rank-line';
+                rankLine.classList.add(user.rank.toLowerCase());
+                
+                // Mostrar hora local (sin ajuste de zona horaria)
+                document.getElementById('userInfo').querySelectorAll('.info-value')[6].textContent = 
+                    `${user.startTime} - ${user.endTime} (${user.country})`;
+                
+                // Ocultar lista de usuarios en el slot
+                document.getElementById('usersInSlot').style.display = 'none';
+            }
+            
+            function showUsersInSlot(slot) {
+                if (slot.dataset.users) {
+                    const usersInSlot = slot.dataset.users.split(',');
+                    const usersList = document.getElementById('usersInSlot');
+                    usersList.innerHTML = '<h3>Usuarios en este horario:</h3>';
+                    
+                    usersInSlot.forEach(userId => {
+                        const user = users.find(u => u.id === userId);
+                        if (user) {
+                            const userItem = createElement('div', 'slot-user-item');
+                            
+                            const colorCube = createElement('span', 'user-cube');
+                            colorCube.style.backgroundColor = user.color;
+                            
+                            const userName = createElement('span', '', user.id);
+                            
+                            userItem.appendChild(colorCube);
+                            userItem.appendChild(userName);
+                            
+                            userItem.addEventListener('click', function() {
+                                showUserInfo(user);
+                            });
+                            
+                            usersList.appendChild(userItem);
+                        }
+                    });
+                    
+                    usersList.style.display = 'block';
+                    selectedUserCube = slot;
+                }
+            }
+            
+            function resetDrag() {
+                draggedUser = null;
+                targetSlot = null;
+                document.querySelectorAll('.drop-target').forEach(el => {
+                    el.classList.remove('drop-target');
+                });
+            }
+            
+            function createElement(tag, className, text) {
+                const element = document.createElement(tag);
+                if (className) element.className = className;
+                if (text) element.textContent = text;
+                return element;
+            }
+            
+            function parseTime(timeStr) {
+                const [hours, minutes] = timeStr.split(':').map(Number);
+                return hours + minutes / 60;
+            }
+            
+            function getRandomColor() {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+        });
     </script>
 </body>
 </html>

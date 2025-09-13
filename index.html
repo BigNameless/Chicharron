@@ -18,6 +18,7 @@
             --diamond: #b9f2ff;
             --ruby: #e0115f;
             --emerald: #50c878;
+            --delete: #ff3860;
         }
         
         * {
@@ -81,6 +82,11 @@
         
         .edit-btn {
             background-color: #4a7aff;
+            color: white;
+        }
+        
+        .clear-all-btn {
+            background-color: var(--delete);
             color: white;
         }
         
@@ -502,6 +508,37 @@
             background-color: rgba(233, 69, 96, 0.2) !important;
             box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
         }
+        
+        .clear-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .clear-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 1;
+            transition: all 0.3s;
+        }
+        
+        .clear-cubicles {
+            background-color: var(--delete);
+            color: white;
+        }
+        
+        .clear-users {
+            background-color: #ff7b00;
+            color: white;
+        }
+        
+        .clear-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -511,12 +548,18 @@
             <div class="header-buttons">
                 <button class="header-btn edit-btn" id="editBtn">Editar Usuario</button>
                 <button class="header-btn delete-btn" id="deleteBtn">Eliminar Cubículo</button>
+                <button class="header-btn clear-all-btn" id="clearAllBtn">Eliminar Todo</button>
             </div>
         </header>
         
         <div class="user-list" id="userList">
             <h2>Usuarios Registrados</h2>
             <!-- Lista de usuarios se generará dinámicamente -->
+            
+            <div class="clear-buttons">
+                <button class="clear-btn clear-cubicles" id="clearCubiclesBtn">Eliminar Todos los Cubículos</button>
+                <button class="clear-btn clear-users" id="clearUsersBtn">Eliminar Todos los Usuarios</button>
+            </div>
         </div>
         
         <div class="schedule-container">
@@ -682,6 +725,19 @@
         </div>
     </div>
     
+    <!-- Modal para eliminar todo -->
+    <div class="modal" id="clearModal">
+        <div class="modal-content">
+            <h2 id="clearModalTitle">Eliminar Todo</h2>
+            <p id="clearModalMessage">¿Estás seguro de que deseas eliminar todos los cubículos? Esta acción no se puede deshacer.</p>
+            <input type="password" id="clearPasswordInput" placeholder="Ingresa la clave 'borrar'">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" id="cancelClear">Cancelar</button>
+                <button class="modal-btn confirm-btn" id="confirmClear">Eliminar</button>
+            </div>
+        </div>
+    </div>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Variables globales
@@ -695,6 +751,7 @@
             let userColors = {};
             let draggedUser = null;
             let targetSlot = null;
+            let clearType = ''; // 'cubicles' or 'users'
             
             // Inicializar la interfaz
             initializeSchedule();
@@ -1021,6 +1078,82 @@
                 resetDrag();
             });
             
+            // Configurar botones para eliminar todo
+            document.getElementById('clearCubiclesBtn').addEventListener('click', function() {
+                clearType = 'cubicles';
+                document.getElementById('clearModalTitle').textContent = 'Eliminar Todos los Cubículos';
+                document.getElementById('clearModalMessage').textContent = 
+                    '¿Estás seguro de que deseas eliminar todos los cubículos? Esta acción no se puede deshacer.';
+                document.getElementById('clearModal').style.display = 'flex';
+                document.getElementById('clearPasswordInput').value = '';
+                document.getElementById('clearPasswordInput').focus();
+            });
+            
+            document.getElementById('clearUsersBtn').addEventListener('click', function() {
+                clearType = 'users';
+                document.getElementById('clearModalTitle').textContent = 'Eliminar Todos los Usuarios';
+                document.getElementById('clearModalMessage').textContent = 
+                    '¿Estás seguro de que deseas eliminar todos los usuarios? Esta acción no se puede deshacer.';
+                document.getElementById('clearModal').style.display = 'flex';
+                document.getElementById('clearPasswordInput').value = '';
+                document.getElementById('clearPasswordInput').focus();
+            });
+            
+            document.getElementById('clearAllBtn').addEventListener('click', function() {
+                clearType = 'all';
+                document.getElementById('clearModalTitle').textContent = 'Eliminar Todo';
+                document.getElementById('clearModalMessage').textContent = 
+                    '¿Estás seguro de que deseas eliminar todos los cubículos y usuarios? Esta acción no se puede deshacer.';
+                document.getElementById('clearModal').style.display = 'flex';
+                document.getElementById('clearPasswordInput').value = '';
+                document.getElementById('clearPasswordInput').focus();
+            });
+            
+            document.getElementById('cancelClear').addEventListener('click', function() {
+                document.getElementById('clearModal').style.display = 'none';
+            });
+            
+            document.getElementById('confirmClear').addEventListener('click', function() {
+                const password = document.getElementById('clearPasswordInput').value;
+                if (password === 'borrar') {
+                    if (clearType === 'cubicles') {
+                        // Eliminar todos los cubículos (horarios) pero mantener usuarios
+                        users.forEach(user => {
+                            user.days = [];
+                            user.startTime = '';
+                            user.endTime = '';
+                        });
+                        alert('Todos los cubículos han sido eliminados');
+                    } else if (clearType === 'users') {
+                        // Eliminar todos los usuarios
+                        users = [];
+                        userColors = {};
+                        localStorage.removeItem('userColors');
+                        alert('Todos los usuarios han sido eliminados');
+                    } else if (clearType === 'all') {
+                        // Eliminar todo
+                        users = [];
+                        userColors = {};
+                        localStorage.removeItem('userColors');
+                        alert('Todos los cubículos y usuarios han sido eliminados');
+                    }
+                    
+                    localStorage.setItem('scheduleUsers', JSON.stringify(users));
+                    updateUserList();
+                    updateUserSidebar();
+                    
+                    document.getElementById('userInfo').querySelectorAll('.info-value').forEach(el => {
+                        el.textContent = '-';
+                    });
+                    document.getElementById('rankLine').className = 'rank-line';
+                    document.getElementById('usersInSlot').style.display = 'none';
+                    
+                    document.getElementById('clearModal').style.display = 'none';
+                } else {
+                    alert('Clave incorrecta. Debes escribir "borrar" para confirmar.');
+                }
+            });
+            
             // Cargar colores de usuario desde localStorage
             const savedColors = localStorage.getItem('userColors');
             if (savedColors) {
@@ -1165,37 +1298,46 @@
             
             function updateUserSidebar() {
                 const userList = document.getElementById('userList');
+                // Mantener los botones de eliminar
+                const clearButtons = userList.querySelector('.clear-buttons');
                 userList.innerHTML = '<h2>Usuarios Registrados</h2>';
                 
-                users.forEach(user => {
-                    const userItem = createElement('div', 'user-item');
-                    userItem.draggable = true;
-                    
-                    const colorBox = createElement('div', 'user-color');
-                    colorBox.style.backgroundColor = user.color;
-                    
-                    const userIdText = createElement('span', '', user.id);
-                    
-                    userItem.appendChild(colorBox);
-                    userItem.appendChild(userIdText);
-                    
-                    userItem.addEventListener('click', function() {
-                        showUserInfo(user);
+                if (users.length === 0) {
+                    userList.appendChild(createElement('p', '', 'No hay usuarios registrados.'));
+                } else {
+                    users.forEach(user => {
+                        const userItem = createElement('div', 'user-item');
+                        userItem.draggable = true;
+                        
+                        const colorBox = createElement('div', 'user-color');
+                        colorBox.style.backgroundColor = user.color;
+                        
+                        const userIdText = createElement('span', '', user.id);
+                        
+                        userItem.appendChild(colorBox);
+                        userItem.appendChild(userIdText);
+                        
+                        userItem.addEventListener('click', function() {
+                            showUserInfo(user);
+                        });
+                        
+                        // Hacer los usuarios arrastrables desde la lista
+                        userItem.addEventListener('dragstart', function(e) {
+                            draggedUser = user.id;
+                            this.classList.add('dragging');
+                        });
+                        
+                        userItem.addEventListener('dragend', function() {
+                            this.classList.remove('dragging');
+                            resetDrag();
+                        });
+                        
+                        userList.appendChild(userItem);
                     });
-                    
-                    // Hacer los usuarios arrastrables desde la lista
-                    userItem.addEventListener('dragstart', function(e) {
-                        draggedUser = user.id;
-                        this.classList.add('dragging');
-                    });
-                    
-                    userItem.addEventListener('dragend', function() {
-                        this.classList.remove('dragging');
-                        resetDrag();
-                    });
-                    
-                    userList.appendChild(userItem);
-                });
+                }
+                
+                // Volver a agregar los botones de eliminar
+                userList.appendChild(clearButtons);
             }
             
             function showUserInfo(user) {
